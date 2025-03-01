@@ -10,7 +10,6 @@ namespace BlazorServer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<WeatherForecastService>();
@@ -31,13 +30,12 @@ namespace BlazorServer
 
             app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.MapBlazorHub();
             app.MapHub<ChatHub>("/chathub");
+            app.MapHub<CounterHub>("/counterhub");
             app.MapFallbackToPage("/_Host");
 
             app.Run();

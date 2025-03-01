@@ -8,14 +8,21 @@ namespace WPFClient;
 public partial class MainWindow : Window
 {
     HubConnection connection;
+    HubConnection counerConnection;
 
     public MainWindow()
     {
         InitializeComponent();
+
         connection = new HubConnectionBuilder()
             .WithUrl("https://localhost:7213/chathub")
             .WithAutomaticReconnect()
             .Build();
+
+        counerConnection = new HubConnectionBuilder()
+           .WithUrl("https://localhost:7213/counterhub")
+           .WithAutomaticReconnect()
+           .Build();
 
         // проработать подписку на события
         connection.Reconnecting += (sender) =>
@@ -96,4 +103,27 @@ public partial class MainWindow : Window
         }
     }
 
+    private async void openCounter_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await counerConnection.StartAsync();
+        }
+        catch (Exception ex)
+        {
+            messages.Items.Add(ex.Message);
+        }
+    }
+
+    private async void incrementCounter_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await counerConnection.InvokeAsync("AddToTotal", "WPF Client", 1); // последний параметр - это отправляемое на хаб значение
+        }
+        catch (Exception ex)
+        {
+            messages.Items.Add(ex.Message);
+        }
+    }
 }
